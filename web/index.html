@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite + React + TS</title>
+  </head>
+  <body>
+    <script>
+      (function(){
+        function mount(msg){
+          var el = document.getElementById('debug-errors');
+          if(!el){
+            el = document.createElement('div');
+            el.id = 'debug-errors';
+            el.style.position = 'fixed';
+            el.style.bottom = '8px';
+            el.style.left = '8px';
+            el.style.zIndex = '9999';
+            el.style.maxWidth = '50vw';
+            el.style.background = '#fee2e2';
+            el.style.color = '#111827';
+            el.style.border = '1px solid #fca5a5';
+            el.style.padding = '8px 10px';
+            el.style.borderRadius = '8px';
+            el.style.fontFamily = 'ui-sans-serif,system-ui,Segoe UI,Arial';
+            el.style.fontSize = '12px';
+            document.body.appendChild(el);
+          }
+          el.textContent = msg;
+        }
+        window.addEventListener('error', function(e){
+          mount('Error: ' + (e.error && e.error.message ? e.error.message : e.message));
+        });
+        window.addEventListener('unhandledrejection', function(e){
+          var m = (e.reason && (e.reason.message || e.reason.toString())) || 'Unhandled promise rejection';
+          mount('Unhandled: ' + m);
+        });
+      })();
+    </script>
+    <noscript>
+      <div style="padding:12px;background:#fee2e2;color:#991b1b;text-align:center">
+        JavaScript is required to view this application.
+      </div>
+    </noscript>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
