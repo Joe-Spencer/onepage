@@ -40,7 +40,7 @@ function Cube() {
 
 import ProceduralModel, { type ProcShape } from './ProceduralModel'
 
-function Scene3D({ shape }: { shape: ProcShape }) {
+function Scene3D({ shape, color, metalness, roughness }: { shape: ProcShape, color: string, metalness: number, roughness: number }) {
   const effects = useSelector((s: RootState) => s.effects)
   return (
     <Canvas camera={{ position: [3, 3, 3], fov: 50 }} style={{ height: 360, width: '100%', borderRadius: 12, background: '#0b1220' }}>
@@ -48,7 +48,7 @@ function Scene3D({ shape }: { shape: ProcShape }) {
       <directionalLight position={[3, 5, 2]} intensity={1} />
       <Stars radius={50} depth={20} count={2000} factor={4} fade />
       <Sparkles count={200} speed={0.6} opacity={0.8} color="#ffffff" />
-      <ProceduralModel shape={shape} />
+      <ProceduralModel shape={shape} color={color} metalness={metalness} roughness={roughness} />
 
       <EffectComposer>
         {effects.bloom && <Bloom intensity={0.6} luminanceThreshold={0.2} luminanceSmoothing={0.1} />}
@@ -70,6 +70,9 @@ function ComplexPage() {
   const dispatch = useDispatch()
   const theme = useSelector((s: RootState) => s.ui.theme)
   const [shape, setShape] = useState<ProcShape>('torus')
+  const [color, setColor] = useState<string>('#ffffff')
+  const [metalness, setMetalness] = useState<number>(0.4)
+  const [roughness, setRoughness] = useState<number>(0.25)
 
   return (
     <ThemeProvider>
@@ -107,15 +110,21 @@ function ComplexPage() {
         <div style={{ marginBottom: 12 }}>
           <ControlsPanel />
         </div>
-        <div style={{ display: 'flex', gap: 12, alignItems: 'center', marginBottom: 8 }}>
+        <div style={{ display: 'flex', gap: 12, alignItems: 'center', marginBottom: 8, flexWrap: 'wrap' }}>
           <label style={{ fontWeight: 600 }}>Shape:</label>
           <select value={shape} onChange={(e) => setShape(e.target.value as ProcShape)} style={{ padding: '6px 10px', borderRadius: 8 }}>
             <option value="torus">torus</option>
             <option value="box">box</option>
             <option value="pyramid">pyramid</option>
           </select>
+          <label style={{ fontWeight: 600, marginLeft: 12 }}>Color:</label>
+          <input type="color" value={color} onChange={(e) => setColor(e.target.value)} />
+          <label style={{ fontWeight: 600, marginLeft: 12 }}>Metalness:</label>
+          <input type="range" min={0} max={1} step={0.05} value={metalness} onChange={(e) => setMetalness(parseFloat(e.target.value))} />
+          <label style={{ fontWeight: 600, marginLeft: 12 }}>Roughness:</label>
+          <input type="range" min={0} max={1} step={0.05} value={roughness} onChange={(e) => setRoughness(parseFloat(e.target.value))} />
         </div>
-        <Scene3D shape={shape} />
+        <Scene3D shape={shape} color={color} metalness={metalness} roughness={roughness} />
         <p>Drag to orbit. Stars, sparkles, and glossy shapes with lights.</p>
       </section>
 
